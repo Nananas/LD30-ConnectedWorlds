@@ -67,6 +67,11 @@ class GoodEndingScene extends Scene
 		collider.setHitbox(100,100);
 		collider.type ="girl";
 		add(collider);
+
+		for (i in 0...10) {
+			var f = new Flies(Math.random()*HXP.screen.width, Math.random()*HXP.screen.height);
+			add(f);
+		}
 	}
 
 
@@ -102,7 +107,7 @@ class GoodEndingScene extends Scene
 					endState = true;
 					var end = function(_)
 					{
-						HXP.scene = new StartScene();	// need a better end scene
+						HXP.scene = new EndScene();	// need a better end scene
 					}
 					var a = new Alarm(7,end);
 					addTween(a);

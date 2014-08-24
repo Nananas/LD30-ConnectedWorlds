@@ -28,6 +28,10 @@ class MainScene extends Scene
 
 	private var endState : Bool;
 
+	private var skipIntro : Bool = false;
+
+	private var canTalk : Bool = true;
+
 	public override function begin()
 	{
 		// background
@@ -57,7 +61,7 @@ class MainScene extends Scene
 					{
 						if (Math.random()<0.5)
 							island = new Island(-250+i*500-250*(j%2),-100);
-						else if (Math.random() > 0.7)
+						else if (Math.random() > 0.8)
 							island = new DarkIsland(-250+i*500-250*(j%2),-100);
 						else
 						{
@@ -99,7 +103,7 @@ class MainScene extends Scene
 		player.stop();
 
 
-		var i = new Island(-250-500 + 250, -100);
+		var i = new EndIsland(-250-500 + 250, -100);
 		i.moveOneUp();
 		add(i);
 		//islandList.push(i);
@@ -110,14 +114,10 @@ class MainScene extends Scene
 		var boat = new Boat(Std.int(boatman.x + 250),Std.int(boatman.y-100));
 		add(boat);
 
-		/*var end = new EndIsland(1250,200);
-		add(end);
-
-		var girl = new Image("graphics/girl.png");
-		girl.originX = Std.int(girl.width/2);
-		girl.originY = girl.height - 10;
-		var girlE = addGraphic(girl,-910,end.x+35,end.y+130);
-		girlE.layer = Std.int(-910 - girlE.y);*/
+		for (i in 0...50) {
+			var f = new Flies(Math.random()*2000-800, Math.random()*1000-200);
+			add(f);
+		}
 
 		var fog = new Image("graphics/Fog.png");
 		fog.scrollX = 0;
@@ -143,45 +143,53 @@ class MainScene extends Scene
 
 		// start of dialogs:
 		// There's probably a better way to do this -.-'
-		var firstText = function(_)
+		if (!skipIntro)
 		{
-			var dialog = new Dialog("Alright... I'm... Euh... Somewhere...");
-			add(dialog);
-			var nextText = function(_)
+
+			var firstText = function(_)
 			{
-				var dialog = new Dialog("\"...Jack, remember, you're in the dream world...\nTry not to touch anything you if don't have to...\"",false);
+				var dialog = new Dialog("Alright... I'm... Euh... Somewhere...");
 				add(dialog);
-				var thirdText = function(_)
+				var nextText = function(_)
 				{
-					var dialog = new Dialog("Don't worry, I won't fail! I mustn't!");
+					var dialog = new Dialog("\"...Jack, remember, you're in the Dreamworld...\nTry not to touch anything if you don't have to...\"",false);
 					add(dialog);
-					player.talking = false;
-					var forthtext = function(_)
+					var thirdText = function(_)
 					{
-						var fifthText = function(_)
+						var dialog = new Dialog("Don't worry, I won't fail! I mustn't!");
+						add(dialog);
+						player.talking = false;
+						var forthtext = function(_)
 						{
-							var dialog = new Dialog("A'ight... lets find my girl!");
-							add(dialog);
+							var fifthText = function(_)
+							{
+								var dialog = new Dialog("A'ight... lets find my girl!");
+								add(dialog);
+							}
+							var a = new Alarm(1.5,fifthText);
+							addTween(a);
+							a.start();		
 						}
-						var a = new Alarm(1.5,fifthText);
+						var a = new Alarm(3,forthtext);
 						addTween(a);
-						a.start();		
+						a.start();					
 					}
-					var a = new Alarm(3,forthtext);
-					addTween(a);
-					a.start();					
+					var d = new Alarm(5, thirdText);
+					addTween(d);
+					d.start();
 				}
-				var d = new Alarm(5, thirdText);
-				addTween(d);
-				d.start();
+				var dd = new Alarm(3, nextText);
+				addTween(dd);
+				dd.start();
 			}
-			var dd = new Alarm(3, nextText);
-			addTween(dd);
-			dd.start();
+			var d = new Alarm(1, firstText);
+			addTween(d);
+			d.start();
 		}
-		var d = new Alarm(1, firstText);
-		addTween(d);
-		d.start();
+		else
+		{
+			player.talking = false;
+		}
 	}
 
 
@@ -202,9 +210,9 @@ class MainScene extends Scene
 
 			if (player.collide("boatman", player.x, player.y) != null)
 			{
-				if (firstEncounter)
+				if (firstEncounter && canTalk)
 				{
-					firstEncounter = false;
+					canTalk = false;
 					player.stop();
 
 					// first dialog
@@ -227,6 +235,14 @@ class MainScene extends Scene
 									var d = new Dialog("Something to cover this bald head of mine\nwould be nice...",false);
 									add(d);
 									player.talking = false;
+									firstEncounter = false;
+									var can = function(_)
+									{
+										canTalk = true;
+									}
+									var a = new Alarm(3, can);
+									addTween(a);
+									a.start();
 								}
 
 								var a = new Alarm(3, end);
@@ -248,7 +264,7 @@ class MainScene extends Scene
 					addTween(a);
 					a.start();
 				}
-				else
+				else if (canTalk)
 				{
 					// check if correct item
 					if (player.hasItem)
@@ -267,6 +283,20 @@ class MainScene extends Scene
 						endState = true;
 
 					}
+					else
+					{
+						var d = new Dialog("So... Nothing yet?", false);
+						add(d);
+					}
+
+					canTalk = false;
+					var backtotalking = function(_)
+					{
+						canTalk = true;
+					}
+					var a = new Alarm(5,backtotalking);
+					addTween(a);
+					a.start();
 				}
 			}
 
@@ -311,20 +341,22 @@ class MainScene extends Scene
 				HXP.screen.y += Std.int(shakeAmount*Math.random());
 
 			}
-
-			if (firstDarkness && player.collide("bad",player.x, player.y) != null)
+			if (!skipIntro)
 			{
-				firstDarkness = false;
-				var dialog = new Dialog("Oh and, Jack, watch out for the darkness!", false);
-				add(dialog);
-				var urg = function(_) // those function names...
+				if (firstDarkness && player.collide("bad",player.x, player.y) != null)
 				{
-					var dialog = new Dialog("Uh... Thanks for the info...");
+					firstDarkness = false;
+					var dialog = new Dialog("Oh and, Jack, watch out for the darkness!", false);
 					add(dialog);
+					var urg = function(_) // those function names...
+					{
+						var dialog = new Dialog("Uh... Thanks for the info...");
+						add(dialog);
+					}
+					var a = new Alarm(2,urg);
+					addTween(a);
+					a.start();
 				}
-				var a = new Alarm(2,urg);
-				addTween(a);
-				a.start();
 			}
 			
 			if (player.collide("good", player.x, player.y) == null)
@@ -381,5 +413,10 @@ class MainScene extends Scene
 			}
 		}
 		super.update();
+	}
+
+	public function skip()
+	{
+		skipIntro = true;
 	}
 }

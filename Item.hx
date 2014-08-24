@@ -93,7 +93,6 @@ class Item extends Entity
 	{
 		scene.addGraphic(emitter,-600-1,0,0);
 		for (i in 0...10) {
-			trace("emitting");
 			var a = Std.random(6);
 			switch (a) {
 				case 0: emitter.emit("a",x,y);

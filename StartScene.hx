@@ -4,38 +4,54 @@ package ;
 import com.haxepunk.Scene;
 import com.haxepunk.graphics.Image;
 import com.haxepunk.utils.Input;
+import com.haxepunk.utils.Key;
+import com.haxepunk.HXP;
+import com.haxepunk.tweens.misc.Alarm;
 
 class StartScene extends Scene
 {
 	private var startbutton : Image;
+	private var overlay : Image;
+	private var endstate : Bool;
 
 	public override function begin()
 	{
-		var back = new Image("graphics/TitleScreen.png");
-		addGraphic(back,0,0,-30);
-		startbutton = new Image("graphics/startbutton.png");
-		startbutton.alpha = 0;
-		addGraphic(startbutton, -1, 293,270);
+		endstate = false;
+		var back = new Image("graphics/Titlescreenxcf.png");
+		addGraphic(back,0,0,0);
+
+		for (i in 0...20) {
+			var f = new Flies(Math.random()*HXP.screen.width, Math.random()*HXP.screen.height);
+			add(f);
+		}
+
+		overlay = Image.createRect(HXP.screen.width, HXP.screen.height, 0x000000);
+		addGraphic(overlay, -9999);	 // WHAAAAA
+		overlay.scrollX = 0;
+		overlay.scrollY = 0;
 	}
 
 	public override function update()
 	{
-		if (mouseX > 300 && mouseX < 520 && mouseY > 300)
-			startbutton.alpha = 1;
-		else
-			startbutton.alpha = 0;
-
-		if (Input.mousePressed)
+		if (Input.pressed(Key.ANY) || Input.mousePressed)
 		{
-			if (mouseX > 300 && mouseX < 520 && mouseY > 300)
+			var end = function(_)
 			{
-				// start
-				
+				HXP.scene = new InterStartScene();
 			}
-			else
-				startbutton.alpha = 0;
-				
+			var a = new Alarm(3,end);
+			addTween(a);
+			a.start();
+			endstate = true;
 		}
+
+		if (!endstate)
+			overlay.alpha -= HXP.elapsed/2;
+		else
+			overlay.alpha += HXP.elapsed/2;
+
+		super.update();
+
 	}
 
 }

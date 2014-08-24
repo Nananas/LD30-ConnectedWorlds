@@ -31,7 +31,7 @@ class Boat extends Entity
 		frontImage.originX = 320;
 		frontImage.originY = 245;
 		front = new Entity(x,y,frontImage);
-		front.layer = -912;
+		front.layer = -612 - Std.int(y);
 
 
 	}

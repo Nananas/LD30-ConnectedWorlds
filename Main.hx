@@ -7,9 +7,9 @@ class Main extends Engine
 	override public function init()
 	{
 #if debug
-		//HXP.console.enable();
+		HXP.console.enable();
 #end
-		HXP.scene = new MainScene();
+		HXP.scene = new StartScene();
 		HXP.screen.smoothing = true;
 		//HXP.screen.angle = 1;
 	}

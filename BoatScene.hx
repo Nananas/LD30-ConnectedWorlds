@@ -38,6 +38,10 @@ class BoatScene extends Scene
 		overlay = Image.createRect(HXP.screen.width, HXP.screen.height, 0x000000);
 		addGraphic(overlay, -9999);	 // WHAAAAA
 		
+		for (i in 0...10) {
+			var f = new Flies(Math.random()*HXP.screen.width, Math.random()*HXP.screen.height);
+			add(f);
+		}
 
 		// some monsters
 		eyesList = new Array<Eyes>();
