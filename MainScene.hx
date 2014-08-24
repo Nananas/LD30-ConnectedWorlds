@@ -391,8 +391,6 @@ class MainScene extends Scene
 					DEAD = true;
 					player.DEAD = true;
 					mouth.hap(player.x, player.y);
-					trace(player.x);
-					trace(player.y);
 				}
 				// DIE state:
 				// Everything becomes black, player can't move

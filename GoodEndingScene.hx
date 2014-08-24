@@ -77,17 +77,10 @@ class GoodEndingScene extends Scene
 
 	override public function update()
 	{
-		if (motion != null)
-			trace(motion.x);
 		if (player.collide("girl", player.x, player.y) != null && motion == null)
 		{
-			var endGame = function(_)
-			{
-				trace("FIN");
-			}
-			motion = new LinearMotion(endGame);
-			trace(player.x);
-			trace(girlE.x);
+			
+			motion = new LinearMotion();
 			motion.setMotion(player.x, player.y, girlE.x-40, girlE.y-40, 2);
 			addTween(motion);
 			motion.start();

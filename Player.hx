@@ -81,15 +81,15 @@ class Player extends Entity
 		emitterTimer = 0;
 
 
-		Input.define("up", [Key.UP, Key.Z]);
+		/*Input.define("up", [Key.UP, Key.Z]);
 		Input.define("down", [Key.DOWN, Key.S]);
 		Input.define("left", [Key.LEFT, Key.Q]);
 		Input.define("right", [Key.RIGHT, Key.D]);
-
-		/*Input.define("up", [Key.UP, Key.W]);
+*/
+		Input.define("up", [Key.UP, Key.W]);
 		Input.define("down", [Key.DOWN, Key.S]);
 		Input.define("left", [Key.LEFT, Key.A]);
-		Input.define("right", [Key.RIGHT, Key.D]);*/
+		Input.define("right", [Key.RIGHT, Key.D]);
 	}
 
 	public override function added()
@@ -161,7 +161,6 @@ class Player extends Entity
 				vy *= 0.98;
 				if (Math.abs(vx) + Math.abs(vy) > 3)
 				{
-					//trace("rotated ")
 					image.angle = 0.1;
 				}
 				else

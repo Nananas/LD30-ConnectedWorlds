@@ -29,7 +29,7 @@ class BoatMan extends Entity
 		var ox : Int = Std.int((image.width)/2);
 		var oy : Int = Std.int(ox / 2);
 		var dy : Int = image.height - oy;
-		mask = new Polygon([new Vector(-ox,0), new Vector(0,-oy), new Vector(ox+10,0), new Vector(0,oy+10)],new Point(0,0));
+		mask = new Polygon([new Vector(-ox*2,0), new Vector(0,-oy*2), new Vector(ox*2,0), new Vector(0,oy*2)],new Point(0,0));
 		originX = ox;
 		originY = oy;
 		image.originX = ox;

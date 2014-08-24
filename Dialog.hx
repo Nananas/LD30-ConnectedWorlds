@@ -15,7 +15,6 @@ class Dialog extends Entity
 	public function new (txt : String, me : Bool = true)
 	{
 		text = new Text(txt);
-		//trace(text.width);
 		
 		text.scrollX = 0;
 		text.scrollY = 0;
